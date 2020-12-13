@@ -1,0 +1,4 @@
+{
+  "go-dist": "github.com/paketo-buildpacks/go-dist",
+  "go-mod-vendor": "github.com/paketo-buildpacks/go-mod-vendor"
+}
