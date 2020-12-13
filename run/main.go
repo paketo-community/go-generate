@@ -3,19 +3,18 @@ package main
 import (
 	"os"
 
-	gomodvendor "github.com/paketo-buildpacks/go-mod-vendor"
+	gogenerate "github.com/paketo-buildpacks/go-generate"
 	"github.com/paketo-buildpacks/packit"
 	"github.com/paketo-buildpacks/packit/chronos"
 	"github.com/paketo-buildpacks/packit/pexec"
 )
 
 func main() {
-	logEmitter := gomodvendor.NewLogEmitter(os.Stdout)
-	goModParser := gomodvendor.NewGoModParser()
+	logEmitter := gogenerate.NewLogEmitter(os.Stdout)
 	packit.Run(
-		gomodvendor.Detect(goModParser),
-		gomodvendor.Build(
-			gomodvendor.NewModVendor(pexec.NewExecutable("go"), logEmitter, chronos.DefaultClock),
+		gogenerate.Detect(),
+		gogenerate.Build(
+			gogenerate.NewGenerate(pexec.NewExecutable("go"), logEmitter, chronos.DefaultClock),
 			logEmitter,
 		),
 	)
