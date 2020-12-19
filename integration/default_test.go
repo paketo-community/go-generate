@@ -76,9 +76,6 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				WithCommand("stat test.txt").
 				Execute(image.ID)
 			Expect(err).NotTo(HaveOccurred())
-
-			// logs, err = docker.Container.Logs.Execute(container.ID)
-			// Expect(err).NotTo(HaveOccurred())
 		})
 	})
 }
