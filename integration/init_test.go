@@ -32,7 +32,7 @@ var settings struct {
 		Name string
 	}
 	Config struct {
-		GoDist string `json:"go-dist"`
+		GoDist      string `json:"go-dist"`
 		GoModVendor string `json:"go-mod-vendor"`
 	}
 }
@@ -70,6 +70,7 @@ func TestIntegration(t *testing.T) {
 	settings.Buildpacks.GoModVendor.Online, err = buildpackStore.Get.
 		Execute(settings.Config.GoModVendor)
 	Expect(err).ToNot(HaveOccurred())
+
 	SetDefaultEventuallyTimeout(10 * time.Second)
 
 	suite := spec.New("Integration", spec.Report(report.Terminal{}), spec.Parallel())

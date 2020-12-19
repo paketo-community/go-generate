@@ -10,6 +10,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+//go:generate bash -c "echo 'hello world' > test.txt"
 type Config struct {
 	Age int
 }

@@ -26,7 +26,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		docker = occam.NewDocker()
 	})
 
-	context("when building a simple go mod app", func() {
+	context("when building a simple go app", func() {
 		var (
 			image     occam.Image
 			container occam.Container
@@ -61,6 +61,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 					settings.Buildpacks.GoModVendor.Online,
 					settings.Buildpacks.GoGenerate.Online,
 				).
+				WithEnv(map[string]string{"BP_GO_GENERATE": "true"}).
 				Execute(name, source)
 			Expect(err).ToNot(HaveOccurred(), logs.String)
 
@@ -72,12 +73,12 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			))
 
 			container, err = docker.Container.Run.
-				WithCommand("ls -alR /workspace").
+				WithCommand("stat test.txt").
 				Execute(image.ID)
 			Expect(err).NotTo(HaveOccurred())
 
-			logs, err = docker.Container.Logs.Execute(container.ID)
-			Expect(err).NotTo(HaveOccurred())
+			// logs, err = docker.Container.Logs.Execute(container.ID)
+			// Expect(err).NotTo(HaveOccurred())
 		})
 	})
 }
