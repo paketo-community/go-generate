@@ -22,10 +22,9 @@ func testGenerate(t *testing.T, context spec.G, it spec.S) {
 	var (
 		Expect = NewWithT(t).Expect
 
-		workingDir  string
-		environment []string
-		executable  *fakes.Executable
-		logs        *bytes.Buffer
+		workingDir string
+		executable *fakes.Executable
+		logs       *bytes.Buffer
 
 		generate gogenerate.Generate
 	)
@@ -35,7 +34,6 @@ func testGenerate(t *testing.T, context spec.G, it spec.S) {
 		workingDir, err = ioutil.TempDir("", "working-directory")
 		Expect(err).NotTo(HaveOccurred())
 
-		environment = os.Environ()
 		executable = &fakes.Executable{}
 
 		logs = bytes.NewBuffer(nil)
@@ -65,7 +63,6 @@ func testGenerate(t *testing.T, context spec.G, it spec.S) {
 			err := generate.Execute(workingDir)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(executable.ExecuteCall.Receives.Execution.Args).To(Equal([]string{"generate", "./..."}))
-			Expect(executable.ExecuteCall.Receives.Execution.Env).To(Equal(append(environment, fmt.Sprintf("GOPATH=%s", modCachePath))))
 			Expect(executable.ExecuteCall.Receives.Execution.Dir).To(Equal(workingDir))
 
 			Expect(logs.String()).To(ContainSubstring("  Executing build process"))

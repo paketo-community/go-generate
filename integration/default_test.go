@@ -61,6 +61,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 					settings.Buildpacks.GoModVendor.Online,
 					settings.Buildpacks.GoGenerate.Online,
 				).
+				WithEnv(map[string]string{"BP_GO_GENERATE": "true"}).
 				Execute(name, source)
 			Expect(err).ToNot(HaveOccurred(), logs.String)
 
@@ -76,7 +77,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				Execute(image.ID)
 			Expect(err).NotTo(HaveOccurred())
 
-			logs, err = docker.Container.Logs.Execute(container.ID)
+			_, err = docker.Container.Logs.Execute(container.ID)
 			Expect(err).NotTo(HaveOccurred())
 		})
 	})
