@@ -13,6 +13,7 @@ import (
 	"github.com/paketo-buildpacks/go-generate/fakes"
 	"github.com/paketo-buildpacks/packit/chronos"
 	"github.com/paketo-buildpacks/packit/pexec"
+	"github.com/paketo-buildpacks/packit/scribe"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
@@ -51,7 +52,7 @@ func testGenerate(t *testing.T, context spec.G, it spec.S) {
 			return t
 		})
 
-		generate = gogenerate.NewGenerate(executable, gogenerate.NewLogEmitter(logs), clock)
+		generate = gogenerate.NewGenerate(executable, scribe.NewLogger(logs), clock)
 	})
 
 	it.After(func() {

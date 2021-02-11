@@ -7,6 +7,7 @@ import (
 
 	"github.com/paketo-buildpacks/packit/chronos"
 	"github.com/paketo-buildpacks/packit/pexec"
+	"github.com/paketo-buildpacks/packit/scribe"
 )
 
 //go:generate faux --interface Executable --output fakes/executable.go
@@ -16,11 +17,11 @@ type Executable interface {
 
 type Generate struct {
 	executable Executable
-	logs       LogEmitter
+	logs       scribe.Logger
 	clock      chronos.Clock
 }
 
-func NewGenerate(executable Executable, logs LogEmitter, clock chronos.Clock) Generate {
+func NewGenerate(executable Executable, logs scribe.Logger, clock chronos.Clock) Generate {
 	return Generate{
 		executable: executable,
 		logs:       logs,
