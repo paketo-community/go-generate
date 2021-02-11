@@ -7,15 +7,21 @@ import (
 	"github.com/paketo-buildpacks/packit"
 	"github.com/paketo-buildpacks/packit/chronos"
 	"github.com/paketo-buildpacks/packit/pexec"
+	"github.com/paketo-buildpacks/packit/scribe"
 )
 
 func main() {
-	logEmitter := gogenerate.NewLogEmitter(os.Stdout)
+	logger := scribe.NewLogger(os.Stdout)
+
 	packit.Run(
 		gogenerate.Detect(),
 		gogenerate.Build(
-			gogenerate.NewGenerate(pexec.NewExecutable("go"), logEmitter, chronos.DefaultClock),
-			logEmitter,
+			gogenerate.NewGenerate(
+				pexec.NewExecutable("go"),
+				logger,
+				chronos.DefaultClock,
+			),
+			logger,
 		),
 	)
 }
