@@ -23,6 +23,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		layersDir    string
 		workingDir   string
 		logs         *bytes.Buffer
+		configParser *fakes.ConfigurationParser
 		buildProcess *fakes.BuildProcess
 
 		build packit.BuildFunc
@@ -40,7 +41,14 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		buildProcess = &fakes.BuildProcess{}
 
+		configParser = &fakes.ConfigurationParser{}
+		configParser.ParseCall.Returns.GenerateConfiguration = gogenerate.GenerateConfiguration{
+			Args:  []string{"some-arg", "other-arg"},
+			Flags: []string{"some-flag", "other-flag"},
+		}
+
 		build = gogenerate.Build(
+			configParser,
 			buildProcess,
 			scribe.NewLogger(logs),
 		)
@@ -65,11 +73,28 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(result).To(Equal(packit.BuildResult{}))
 
 		Expect(buildProcess.ExecuteCall.Receives.WorkingDir).To(Equal(workingDir))
+		Expect(buildProcess.ExecuteCall.Receives.Config).To(Equal(gogenerate.GenerateConfiguration{
+			Args:  []string{"some-arg", "other-arg"},
+			Flags: []string{"some-flag", "other-flag"},
+		}))
 
 		Expect(logs.String()).To(ContainSubstring("Some Buildpack some-version"))
 	})
 
 	context("failure cases", func() {
+		context("config parsing fails", func() {
+			it.Before(func() {
+				configParser.ParseCall.Returns.Error = errors.New("generate arg parsing failed")
+			})
+
+			it("returns an error", func() {
+				_, err := build(packit.BuildContext{
+					Layers:     packit.Layers{Path: layersDir},
+					WorkingDir: workingDir,
+				})
+				Expect(err).To(MatchError(ContainSubstring("generate arg parsing failed")))
+			})
+		})
 
 		context("build process fails to execute", func() {
 			it.Before(func() {
