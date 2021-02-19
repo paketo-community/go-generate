@@ -60,14 +60,22 @@ func testGenerate(t *testing.T, context spec.G, it spec.S) {
 	})
 
 	context("Execute", func() {
-		it("runs go generate ./...", func() {
-			err := generate.Execute(workingDir)
+		it("executes the go generate process", func() {
+			err := generate.Execute(workingDir, gogenerate.GenerateConfiguration{
+				Args:  []string{"main.go", "somemodule"},
+				Flags: []string{"-n"},
+			})
 			Expect(err).NotTo(HaveOccurred())
-			Expect(executable.ExecuteCall.Receives.Execution.Args).To(Equal([]string{"generate", "./..."}))
+			Expect(executable.ExecuteCall.Receives.Execution.Args).To(Equal([]string{
+				"generate",
+				"-n",
+				"main.go",
+				"somemodule",
+			}))
 			Expect(executable.ExecuteCall.Receives.Execution.Dir).To(Equal(workingDir))
 
 			Expect(logs.String()).To(ContainSubstring("  Executing build process"))
-			Expect(logs.String()).To(ContainSubstring("    Running 'go generate ./...'"))
+			Expect(logs.String()).To(ContainSubstring(`    Running 'go generate -n main.go somemodule'`))
 			Expect(logs.String()).To(ContainSubstring("      Completed in 1s"))
 		})
 
@@ -83,7 +91,7 @@ func testGenerate(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error", func() {
-					err := generate.Execute(workingDir)
+					err := generate.Execute(workingDir, gogenerate.GenerateConfiguration{Args: []string{"./..."}})
 					Expect(err).To(MatchError(ContainSubstring("executable failed")))
 
 					Expect(logs.String()).To(ContainSubstring("      Failed after 1s"))

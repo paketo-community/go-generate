@@ -29,9 +29,11 @@ func NewGenerate(executable Executable, logs scribe.Logger, clock chronos.Clock)
 	}
 }
 
-func (g Generate) Execute(workingDir string) error {
+func (g Generate) Execute(workingDir string, config GenerateConfiguration) error {
 	buffer := bytes.NewBuffer(nil)
-	args := []string{"generate", "./..."}
+
+	args := append([]string{"generate"}, config.Flags...)
+	args = append(args, config.Args...)
 
 	g.logs.Process("Executing build process")
 	g.logs.Subprocess("Running 'go %s'", strings.Join(args, " "))
