@@ -1,0 +1,7 @@
+[[requires]]
+name = "go"
+
+[requires.metadata]
+  build=true
+  launch=true
+
