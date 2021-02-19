@@ -12,10 +12,12 @@ import (
 
 func main() {
 	logger := scribe.NewLogger(os.Stdout)
+	configParser := gogenerate.NewGenerateConfigurationParser()
 
 	packit.Run(
-		gogenerate.Detect(),
+		gogenerate.Detect(configParser),
 		gogenerate.Build(
+			configParser,
 			gogenerate.NewGenerate(
 				pexec.NewExecutable("go"),
 				logger,

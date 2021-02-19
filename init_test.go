@@ -12,5 +12,6 @@ func TestUnitGoGenerate(t *testing.T) {
 	suite("Build", testBuild)
 	suite("Detect", testDetect)
 	suite("Generate", testGenerate)
+	suite("GenerateConfigurationParser", testGenerateConfigurationParser)
 	suite.Run(t)
 }
