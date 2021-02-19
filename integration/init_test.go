@@ -23,6 +23,9 @@ var settings struct {
 		GoModVendor struct {
 			Online string
 		}
+		BuildPlan struct {
+			Online string
+		}
 		GoGenerate struct {
 			Online string
 		}
@@ -32,8 +35,9 @@ var settings struct {
 		Name string
 	}
 	Config struct {
-		GoDist string `json:"go-dist"`
+		GoDist      string `json:"go-dist"`
 		GoModVendor string `json:"go-mod-vendor"`
+		BuildPlan   string `json:"build-plan"`
 	}
 }
 
@@ -70,9 +74,15 @@ func TestIntegration(t *testing.T) {
 	settings.Buildpacks.GoModVendor.Online, err = buildpackStore.Get.
 		Execute(settings.Config.GoModVendor)
 	Expect(err).ToNot(HaveOccurred())
+
+	settings.Buildpacks.BuildPlan.Online, err = buildpackStore.Get.
+		Execute(settings.Config.BuildPlan)
+	Expect(err).ToNot(HaveOccurred())
+
 	SetDefaultEventuallyTimeout(10 * time.Second)
 
 	suite := spec.New("Integration", spec.Report(report.Terminal{}), spec.Parallel())
 	suite("Default", testDefault)
+	suite("ArgsAndFlags", testArgsAndFlags)
 	suite.Run(t)
 }
