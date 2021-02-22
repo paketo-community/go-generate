@@ -72,7 +72,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				MatchRegexp(`      Completed in ([0-9]*(\.[0-9]*)?[a-z]+)+`),
 			))
 
-			_, err = docker.Container.Run.
+			container, err = docker.Container.Run.
 				WithCommand("stat test.txt").
 				Execute(image.ID)
 			Expect(err).NotTo(HaveOccurred())
