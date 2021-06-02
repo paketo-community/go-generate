@@ -1,12 +1,12 @@
 api = "0.4"
 
 [buildpack]
+  homepage = "https://github.com/paketo-community/go-generate"
   id = "paketo-community/go-generate"
   name = "Paketo Go Generate Buildpack"
-  homepage = "https://github.com/paketo-community/go-generate"
 
 [metadata]
-  include-files = ["bin/build","bin/detect", "bin/run", "buildpack.toml"]
+  include-files = ["bin/build", "bin/detect", "bin/run", "buildpack.toml"]
   pre-package = "./scripts/build.sh"
 
 [[stacks]]
