@@ -1,1 +1,3 @@
 CODEOWNERS
+.github/workflows/update-dependencies.yml
+.github/workflows/update-dependencies-from-metadata.yml
