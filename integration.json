@@ -1,5 +1,11 @@
 {
+  "build-plan": "github.com/paketo-community/build-plan",
+  "builders": [
+    "index.docker.io/paketobuildpacks/builder:buildpackless-base",
+    "index.docker.io/paketobuildpacks/builder:buildpackless-tiny",
+    "index.docker.io/paketobuildpacks/builder-jammy-buildpackless-base:latest",
+    "index.docker.io/paketobuildpacks/builder-jammy-buildpackless-tiny:latest"
+  ],
   "go-dist": "github.com/paketo-buildpacks/go-dist",
-  "go-mod-vendor": "github.com/paketo-buildpacks/go-mod-vendor",
-  "build-plan": "github.com/paketo-community/build-plan"
+  "go-mod-vendor": "github.com/paketo-buildpacks/go-mod-vendor"
 }
