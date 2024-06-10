@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -32,7 +31,7 @@ func testGenerate(t *testing.T, context spec.G, it spec.S) {
 
 	it.Before(func() {
 		var err error
-		workingDir, err = ioutil.TempDir("", "working-directory")
+		workingDir, err = os.MkdirTemp("", "working-directory")
 		Expect(err).NotTo(HaveOccurred())
 
 		executable = &fakes.Executable{}
