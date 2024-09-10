@@ -1,7 +1,6 @@
 package gogenerate_test
 
 import (
-	"os"
 	"testing"
 
 	gogenerate "github.com/paketo-buildpacks/go-generate"
@@ -18,16 +17,14 @@ func testGenerateConfigurationParser(t *testing.T, context spec.G, it spec.S) {
 	)
 
 	it.Before(func() {
-		parser = gogenerate.NewGenerateConfigurationParser()
+		parser = gogenerate.NewGenerateConfigurationParser(gogenerate.GenerateEnvironment{})
 	})
 
 	context("BP_GO_GENERATE_ARGS is set", func() {
 		it.Before(func() {
-			os.Setenv("BP_GO_GENERATE_ARGS", "somemodule othermodule")
-		})
-
-		it.After(func() {
-			os.Unsetenv("BP_GO_GENERATE_ARGS")
+			parser = parser.WithEnvironment(gogenerate.GenerateEnvironment{
+				GoGenerateArgs: "somemodule othermodule",
+			})
 		})
 
 		it("uses the values in the env var", func() {
@@ -37,7 +34,7 @@ func testGenerateConfigurationParser(t *testing.T, context spec.G, it spec.S) {
 				Args: []string{"somemodule", "othermodule"},
 			}))
 		})
-	}, spec.Sequential())
+	})
 
 	context("BP_GO_GENERATE_ARGS is NOT set", func() {
 		it("uses the default value", func() {
@@ -47,15 +44,13 @@ func testGenerateConfigurationParser(t *testing.T, context spec.G, it spec.S) {
 				Args: []string{"./..."},
 			}))
 		})
-	}, spec.Sequential())
+	})
 
 	context("BP_GO_GENERATE_FLAGS is set", func() {
 		it.Before(func() {
-			os.Setenv("BP_GO_GENERATE_FLAGS", `-run="^//go:generate go get" -n`)
-		})
-
-		it.After(func() {
-			os.Unsetenv("BP_GO_GENERATE_FLAGS")
+			parser = parser.WithEnvironment(gogenerate.GenerateEnvironment{
+				GoGenerateFlags: `-run="^//go:generate go get" -n`,
+			})
 		})
 
 		it("uses the values in the env var", func() {
@@ -66,38 +61,34 @@ func testGenerateConfigurationParser(t *testing.T, context spec.G, it spec.S) {
 				Flags: []string{`-run=^//go:generate go get`, "-n"},
 			}))
 		})
-	}, spec.Sequential())
+	})
 
 	context("failure cases", func() {
 
 		context("generate args fail to parse", func() {
 			it.Before(func() {
-				os.Setenv("BP_GO_GENERATE_ARGS", "\"")
+				parser = parser.WithEnvironment(gogenerate.GenerateEnvironment{
+					GoGenerateArgs: "\"",
+				})
 			})
 
 			it("returns an error", func() {
 				_, err := parser.Parse()
 				Expect(err).To(MatchError(ContainSubstring(`BP_GO_GENERATE_ARGS="\"": invalid command line string`)))
 			})
-
-			it.After(func() {
-				os.Unsetenv("BP_GO_GENERATE_ARGS")
-			})
-		}, spec.Sequential())
+		})
 
 		context("generate flags fail to parse", func() {
 			it.Before(func() {
-				os.Setenv("BP_GO_GENERATE_FLAGS", "\"")
+				parser = parser.WithEnvironment(gogenerate.GenerateEnvironment{
+					GoGenerateFlags: "\"",
+				})
 			})
 
 			it("returns an error", func() {
 				_, err := parser.Parse()
 				Expect(err).To(MatchError(ContainSubstring(`BP_GO_GENERATE_FLAGS="\"": invalid command line string`)))
 			})
-
-			it.After(func() {
-				os.Unsetenv("BP_GO_GENERATE_ARGS")
-			})
-		}, spec.Sequential())
+		})
 	})
 }
