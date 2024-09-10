@@ -77,7 +77,7 @@ func testGenerateConfigurationParser(t *testing.T, context spec.G, it spec.S) {
 
 			it("returns an error", func() {
 				_, err := parser.Parse()
-				Expect(err).To(MatchError(ContainSubstring("invalid command line string")))
+				Expect(err).To(MatchError(ContainSubstring(`BP_GO_GENERATE_ARGS="\"": invalid command line string`)))
 			})
 
 			it.After(func() {
@@ -92,7 +92,7 @@ func testGenerateConfigurationParser(t *testing.T, context spec.G, it spec.S) {
 
 			it("returns an error", func() {
 				_, err := parser.Parse()
-				Expect(err).To(MatchError(ContainSubstring("invalid command line string")))
+				Expect(err).To(MatchError(ContainSubstring(`BP_GO_GENERATE_FLAGS="\"": invalid command line string`)))
 			})
 
 			it.After(func() {

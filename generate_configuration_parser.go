@@ -1,6 +1,7 @@
 package gogenerate
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/mattn/go-shellwords"
@@ -33,7 +34,7 @@ func (p GenerateConfigurationParser) Parse() (GenerateConfiguration, error) {
 		generateConfiguration.Args, err = shellwordsParser.Parse(val)
 
 		if err != nil {
-			return GenerateConfiguration{}, err
+			return GenerateConfiguration{}, fmt.Errorf("BP_GO_GENERATE_ARGS=%q: %w", val, err)
 		}
 	}
 
@@ -41,7 +42,7 @@ func (p GenerateConfigurationParser) Parse() (GenerateConfiguration, error) {
 		generateConfiguration.Flags, err = shellwordsParser.Parse(val)
 
 		if err != nil {
-			return GenerateConfiguration{}, err
+			return GenerateConfiguration{}, fmt.Errorf("BP_GO_GENERATE_FLAGS=%q: %w", val, err)
 		}
 	}
 	return generateConfiguration, nil
