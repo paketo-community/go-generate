@@ -24,9 +24,9 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 		workingDir, err = os.MkdirTemp("", "working-dir")
 		Expect(err).NotTo(HaveOccurred())
 
-		os.Setenv("BP_GO_GENERATE", "true")
-
-		detect = gogenerate.Detect()
+		detect = gogenerate.Detect(gogenerate.GenerateEnvironment{
+			RunGoGenerate: true,
+		})
 	})
 
 	it.After(func() {
@@ -43,14 +43,16 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 
 	context("when BP_GO_GENERATE is empty", func() {
 		it.Before(func() {
-			os.Unsetenv("BP_GO_GENERATE")
+			detect = gogenerate.Detect(gogenerate.GenerateEnvironment{
+				RunGoGenerate: false,
+			})
 		})
 
 		it("fails detection", func() {
 			_, err := detect(packit.DetectContext{
 				WorkingDir: workingDir,
 			})
-			Expect(err).To(MatchError(packit.Fail.WithMessage("BP_GO_GENERATE is empty")))
+			Expect(err).To(MatchError(packit.Fail.WithMessage("BP_GO_GENERATE is not truthy")))
 		})
 	})
 }

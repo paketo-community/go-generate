@@ -2,7 +2,6 @@ package gogenerate
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/mattn/go-shellwords"
 )
@@ -13,10 +12,18 @@ type GenerateConfiguration struct {
 }
 
 type GenerateConfigurationParser struct {
+	generateEnvironment GenerateEnvironment
 }
 
-func NewGenerateConfigurationParser() GenerateConfigurationParser {
-	return GenerateConfigurationParser{}
+func NewGenerateConfigurationParser(generateEnvironment GenerateEnvironment) GenerateConfigurationParser {
+	return GenerateConfigurationParser{
+		generateEnvironment: generateEnvironment,
+	}
+}
+
+func (p GenerateConfigurationParser) WithEnvironment(generateEnvironment GenerateEnvironment) GenerateConfigurationParser {
+	p.generateEnvironment = generateEnvironment
+	return p
 }
 
 func (p GenerateConfigurationParser) Parse() (GenerateConfiguration, error) {
@@ -30,19 +37,19 @@ func (p GenerateConfigurationParser) Parse() (GenerateConfiguration, error) {
 	shellwordsParser.ParseEnv = true
 
 	generateConfiguration.Args = []string{"./..."}
-	if val, ok := os.LookupEnv("BP_GO_GENERATE_ARGS"); ok {
-		generateConfiguration.Args, err = shellwordsParser.Parse(val)
+	if p.generateEnvironment.GoGenerateArgs != "" {
+		generateConfiguration.Args, err = shellwordsParser.Parse(p.generateEnvironment.GoGenerateArgs)
 
 		if err != nil {
-			return GenerateConfiguration{}, fmt.Errorf("BP_GO_GENERATE_ARGS=%q: %w", val, err)
+			return GenerateConfiguration{}, fmt.Errorf("BP_GO_GENERATE_ARGS=%q: %w", p.generateEnvironment.GoGenerateArgs, err)
 		}
 	}
 
-	if val, ok := os.LookupEnv("BP_GO_GENERATE_FLAGS"); ok {
-		generateConfiguration.Flags, err = shellwordsParser.Parse(val)
+	if p.generateEnvironment.GoGenerateFlags != "" {
+		generateConfiguration.Flags, err = shellwordsParser.Parse(p.generateEnvironment.GoGenerateFlags)
 
 		if err != nil {
-			return GenerateConfiguration{}, fmt.Errorf("BP_GO_GENERATE_FLAGS=%q: %w", val, err)
+			return GenerateConfiguration{}, fmt.Errorf("BP_GO_GENERATE_FLAGS=%q: %w", p.generateEnvironment.GoGenerateFlags, err)
 		}
 	}
 	return generateConfiguration, nil
