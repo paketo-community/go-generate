@@ -3,7 +3,7 @@ module github.com/paketo-buildpacks/go-generate
 go 1.24.1
 
 require (
-	github.com/BurntSushi/toml v1.4.0
+	github.com/BurntSushi/toml v1.5.0
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/mattn/go-shellwords v1.0.12
 	github.com/onsi/gomega v1.36.2
