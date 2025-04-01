@@ -7,7 +7,7 @@ require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/mattn/go-shellwords v1.0.12
 	github.com/onsi/gomega v1.36.3
-	github.com/paketo-buildpacks/occam v0.24.0
+	github.com/paketo-buildpacks/occam v0.25.0
 	github.com/paketo-buildpacks/packit/v2 v2.16.0
 	github.com/sclevine/spec v1.4.0
 )
